@@ -3,13 +3,24 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## Unreleased
+
+- ci: release builds on `v*.*.*` tags only (was `openpak-v*`), CI/CodeQL on manual dispatch,
+  artifacts kept 3 days [d33e32e, 898e304]; docs commits
+
+## openpak-v0.2.0 — 2026-09-10
+
+- Resolve every `*.openpak.org` name on the console itself (`common/inkay_config.h`,
+  `-DOPENPAK_SERVER_IP`): no public DNS record needed [23b207c]
+
 ## openpak-v0.1.1 — 2026-09-10
 
-
+- The module file is `Inkay-openpak.wms` [9d1cfdd]
 
 ## openpak-v0.1.0 — 2026-09-10
 
-
+- openpak.org names (same length as pretendo.cc), the OpenPak CA, release on `openpak-v*`
+  tags [5c753b7]; `NETWORK_BASEURL` is openpak.org too [1bca437]
 
 ## v3.0.0 — 2025-02-15
 
