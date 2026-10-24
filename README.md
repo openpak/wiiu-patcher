@@ -1,4 +1,4 @@
-# OpenPak nn-inkay — Wii U patches for OpenPak (Aroma)
+# OpenPak Wii U Patcher — Wii U patches for OpenPak (Aroma)
 
 Fork of Pretendo's Inkay (GPL/AGPL as upstream). The same in-memory patches, pointed at
 OpenPak: every `*.pretendo.cc` name became the same-length `*.openpak.org` name, and
