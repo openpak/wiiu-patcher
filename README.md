@@ -1,58 +1,44 @@
-# OpenPak Wii U Patcher — Wii U patches for OpenPak (Aroma)
+# Wii U Patcher
 
-Fork of Pretendo's Inkay (GPL/AGPL as upstream). The same in-memory patches, pointed at
-OpenPak: every `*.pretendo.cc` name became the same-length `*.openpak.org` name, and
-`data/ca.pem` is the OpenPak Network CA, so the console trusts the leafs Traefik serves for
-those names. No DNS setup and no public DNS record: the module resolves every `*.openpak.org` name to the OpenPak box itself (`common/inkay_config.h`, override with `-DOPENPAK_SERVER_IP`). Copy `Inkay-openpak.wms` to `sd:/wiiu/environments/aroma/modules/` and the console goes to
-OpenPak; remove it and it goes back. Releases: `vX.Y.Z` tags.
+OpenPak's Wii U Patcher.
 
-Not yet run on hardware. The server side (`nn-account`, `nn-friends`, `nn-nncs`, `nn-boss`,
-`nn-juxtaposition`, `nn-soap`) answers both the Nintendo names and these `openpak.org` names.
+| | |
+| --- | --- |
+| Console | Wii U |
+| Kind | Aroma module (`Inkay-openpak.wms`) |
+| Download | [Releases](https://github.com/openpak/wiiu-patcher/releases) (`vX.Y.Z` tags) |
+| Based on | [Pretendo Inkay](https://github.com/PretendoNetwork/Inkay) (GPL-3.0, as upstream) |
+| Licence | GPL-3.0, see [LICENSE](LICENSE) |
 
----
+## What it does
 
-# Inkay - Aroma patches for Pretendo
+- Rewrites every `*.pretendo.cc` name to the same-length `*.openpak.org` name.
+- Ships the OpenPak Network CA (`data/ca.pem`) so the console trusts the certificates served for those names.
+- Resolves every `*.openpak.org` name to the OpenPak box itself; no DNS setup or public DNS record is needed.
 
-[![Pretendo network logo](https://github.com/PretendoNetwork/website/raw/master/public/assets/images/opengraph/opengraph-image.png)](https://pretendo.network)
+## Install
 
-Inkay is an Aroma/WUPS plugin that patches various Nintendo Network URLs on a Wii U to use Pretendo Network instead. It also (for the time being) bypasses SSL verification in most cases. It redirects Nintendo Network in:
+1. Copy `Inkay-openpak.wms` to `sd:/wiiu/environments/aroma/modules/`.
+2. Remove the file to go back to Nintendo's servers.
 
-- IOSU-side connections (Friends, SpotPass, accounts etc.)
-- Account Settings
-- NNCS
-- Nintendo eShop
-- Miiverse (in-game)
-- Miiverse applet
+## Build
 
-Inkay also includes game-specific patches to add extra features:
-- Modpack-specific matchmaking for global, regional rooms (by simulating extra DLC) - **Mario Kart 8**
-- P2P port override for better connection stability (if you port forward) - **Minecraft: Wii U Edition**, **Mario Kart 8**, **Splatoon**
-
-## Requirements
-Inkay is only supported on the release version of Aroma configured for autoboot/coldboot. Other configurations (specifically lacking coldboot) may cause issues with SpotPass.
-
-## Safety
-Inkay's patches are all temporary, and only applied in-memory without modifying your console. The SSL patch, while also temporary, could reduce the overall security of your console while active - this is because it no longer checks if a server is verified. However, this does not apply to the Internet Browser, where SSL still works as expected.
-
-## Compiling - Docker
-Inkay's dependencies and build tooling can be handled as a container, which is recommended for WUPS plugins. Using `docker` or `podman`:
 ```shell
-docker build -t inkay .
-docker run --rm -v $(pwd):/app inkay make
-# you can replace "make" with other commands - e.g. make clean
+docker build . -t builder
+docker run --rm -v ${PWD}:/app -w /app builder
 ```
-If using `podman` on SELinux systems (like Fedora Linux), you might need to use `$(pwd):/app:Z` instead of `$(pwd):/app`.
 
-## Compiling - System
-Inkay has the following dependencies aside from devkitPPC and wut:
-- [WiiUPluginSystem](https://github.com/wiiu-env/WiiUPluginSystem)
-- [WiiUModuleSystem](https://github.com/wiiu-env/WiiUModuleSystem)
-- [libmocha](https://github.com/wiiu-env/libmocha)
-- [libkernel](https://github.com/wiiu-env/libkernel/)
-- [libnotifications](https://github.com/wiiu-env/libnotifications/)
-- [libfunctionpatcher](https://github.com/wiiu-env/libfunctionpatcher)
+See [deploy](docs/deploy.md).
 
-Each of these should be `make install`-able. After that, you can compile Inkay with `make`.
+## Docs
 
-## TODO
-See [Issues](https://github.com/PretendoNetwork/Inkay/issues).
+- [Protocol](docs/protocol.md)
+- [Evidence](docs/evidence.md)
+- [Deploy](docs/deploy.md)
+- [Notes](docs/notes.md)
+- [Upstream README](docs/upstream.md)
+- [Docs index](docs/README.md)
+
+## Licence
+
+See [LICENSE](LICENSE).
