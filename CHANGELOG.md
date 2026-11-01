@@ -3,7 +3,10 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
-## Unreleased
+## v0.3.0 — 2026-11-01
+
+- The plugin is `Inkay-openpak.wps` (was `Inkay-pretendo.wps`), so it can't be mistaken for
+  Pretendo's plugin of the same name on the SD card
 
 - ci: release builds on `v*.*.*` tags only (was `openpak-v*`), CI/CodeQL on manual dispatch,
   artifacts kept 3 days [d33e32e, 898e304]; docs commits
