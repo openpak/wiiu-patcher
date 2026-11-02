@@ -1,3 +1,9 @@
+# Provenance
+
+Based on [Pretendo Inkay](https://github.com/PretendoNetwork/Inkay) (GPL-3.0, as upstream). License as upstream; see LICENSE. The upstream README follows verbatim.
+
+---
+
 # Inkay - Aroma patches for Pretendo
 
 [![Pretendo network logo](https://github.com/PretendoNetwork/website/raw/master/public/assets/images/opengraph/opengraph-image.png)](https://pretendo.network)

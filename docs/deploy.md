@@ -22,7 +22,7 @@ The server addresses are defined in `common/inkay_config.h` (`OPENPAK_SERVER_IP`
 2. Remove the file to go back to Nintendo's servers.
 
 Aroma must be the release version configured for autoboot/coldboot. The upstream requirements
-are in [upstream.md](upstream.md).
+are in [provenance.md](provenance.md).
 
 ## Release
 

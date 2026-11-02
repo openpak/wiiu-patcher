@@ -34,10 +34,10 @@ See [deploy](docs/deploy.md).
 
 - [Protocol](docs/protocol.md)
 - [Deploy](docs/deploy.md)
-- [Notes](docs/notes.md)
-- [Upstream README](docs/upstream.md)
-- [Docs index](docs/README.md)
+- [Provenance](docs/provenance.md)
 
 ## Licence
 
 See [LICENSE](LICENSE).
+
+PRDs: openpak/prds (private)
