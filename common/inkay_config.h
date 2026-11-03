@@ -16,14 +16,28 @@
 
 #ifndef NETWORK_BASEURL
 #define NETWORK_BASEURL "openpak.org"
-// The console resolves every *.openpak.org name to these addresses itself (dns_hooks.cpp), so
-// no public DNS record is needed. Override at build time: -DOPENPAK_SERVER_IP='"1.2.3.4"'.
+#endif
+
+// OpenPak server addresses: the single source, fixed at build time (Makefile variables
+// OPENPAK_SERVER_IP, OPENPAK_NNCS2_IP, OPENPAK_IOSU_PORT). Nothing here needs a DNS record:
+// - PPC side (games, NEX, applets): dns_hooks.cpp answers every *.openpak.org name itself.
+// - IOSU side (act, nim, boss): iosu_url_patches.h writes IP-literal URLs, because IOSU
+//   resolves through the console's real DNS and never sees the PPC hook.
+// A server move therefore needs a new Inkay release.
 #ifndef OPENPAK_SERVER_IP
 #define OPENPAK_SERVER_IP "145.241.199.19"
 #endif
 #ifndef OPENPAK_NNCS2_IP
 #define OPENPAK_NNCS2_IP "145.241.228.207"
 #endif
+// TLS port of the Wii U system entrypoint on the box (openpak-edge terminates TLS with the
+// console certificate as its default, Traefik routes by path). Keep it four digits: the act
+// URL slot is exactly as long as "account.openpak.org", which "<ip>:<4-digit port>" matches
+// for the default address.
+#ifndef OPENPAK_IOSU_PORT
+#define OPENPAK_IOSU_PORT "4443"
 #endif
+#define OPENPAK_IOSU_HTTPS "https://" OPENPAK_SERVER_IP ":" OPENPAK_IOSU_PORT
+#define OPENPAK_IOSU_HTTP "http://" OPENPAK_SERVER_IP
 
 #endif //INKAY_INKAY_CONFIG_H

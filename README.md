@@ -14,12 +14,17 @@ OpenPak's Wii U Patcher.
 
 - Rewrites every `*.pretendo.cc` name to the same-length `*.openpak.org` name.
 - Ships the OpenPak Network CA (`data/ca.pem`) so the console trusts the certificates served for those names.
-- Resolves every `*.openpak.org` name to the OpenPak box itself; no DNS setup or public DNS record is needed.
+- Resolves every `*.openpak.org` name to the OpenPak box itself on the PPC side, and points the IOSU
+  services (account, eShop/SOAP, SpotPass, update list) at the box's IP address, so the console
+  reaches OpenPak on automatic DNS with no DNS setup and no public DNS record. The addresses are
+  fixed at build time: a server move needs a new release (see [protocol](docs/protocol.md)).
 
 ## Install
 
-1. Copy `Inkay-openpak.wms` to `sd:/wiiu/environments/aroma/modules/`.
-2. Remove the file to go back to Nintendo's servers.
+1. Copy `Inkay-openpak.wms` to `sd:/wiiu/environments/aroma/modules/` and `Inkay-openpak.wps` to
+   `sd:/wiiu/environments/aroma/plugins/`.
+2. Power the console off and on (IOSU patches load at boot).
+3. Remove the files to go back to Nintendo's servers.
 
 ## Build
 

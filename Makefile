@@ -34,6 +34,18 @@ CFLAGS	:=	-Wall -ffunction-sections -fdata-sections \
 
 CFLAGS	+=	$(INCLUDE) -D__WIIU__ -D__WUT__
 
+# OpenPak server addresses (defaults in common/inkay_config.h). A server move is a new build:
+#   make OPENPAK_SERVER_IP=1.2.3.4 OPENPAK_NNCS2_IP=1.2.3.5 OPENPAK_IOSU_PORT=4443
+ifneq ($(strip $(OPENPAK_SERVER_IP)),)
+CFLAGS	+=	-DOPENPAK_SERVER_IP='"$(OPENPAK_SERVER_IP)"'
+endif
+ifneq ($(strip $(OPENPAK_NNCS2_IP)),)
+CFLAGS	+=	-DOPENPAK_NNCS2_IP='"$(OPENPAK_NNCS2_IP)"'
+endif
+ifneq ($(strip $(OPENPAK_IOSU_PORT)),)
+CFLAGS	+=	-DOPENPAK_IOSU_PORT='"$(OPENPAK_IOSU_PORT)"'
+endif
+
 CXXFLAGS	:= $(CFLAGS) -std=c++20
 
 ASFLAGS	:=	-g $(ARCH)

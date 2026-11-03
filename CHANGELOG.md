@@ -3,6 +3,17 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.4.0 — 2026-11-03
+
+- IOSU services reach OpenPak with no DNS record: the act, nim and boss URL patches are IP
+  literals (`https://<OPENPAK_SERVER_IP>:4443/...`, plain-HTTP ones on port 80) instead of
+  `*.openpak.org` names, which IOSU resolved through the console's real DNS. The box routes the
+  Wii U system entrypoint (TCP 4443) by path. A server move now needs a new release
+- `OPENPAK_SERVER_IP`, `OPENPAK_NNCS2_IP`, `OPENPAK_IOSU_PORT` are the single source, settable
+  as Makefile variables; a build fails if an address makes an IOSU string overflow its slot
+- `n.app.openpak.org` stays a name (unmeasured, possibly a suffix)
+- Releases attach `Inkay-openpak.wps` as well as the `.wms`
+
 ## v0.3.0 — 2026-11-01
 
 - The plugin is `Inkay-openpak.wps` (was `Inkay-pretendo.wps`), so it can't be mistaken for
