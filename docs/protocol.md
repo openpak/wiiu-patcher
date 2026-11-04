@@ -26,7 +26,7 @@ That entrypoint routes by path and rewrites `Host` to the name each service expe
 | Path | Host given to the service | Service |
 | --- | --- | --- |
 | `/v1/api/` | `account.openpak.org` | nn-account |
-| `/ecs/`, `/ias/`, `/nus/`, `/tagaya/`, `/pls/` | `<x>.wup.shop.openpak.org` | nn-soap |
+| `/ecs/`, `/ias/`, `/pls/` | `<x>.wup.shop.openpak.org` | nn-soap |
 | `/cas/` | `cas.c.shop.openpak.org` | nn-soap |
 | `/p01/tasksheet/` | `npts.app.openpak.org`, plus `X-OpenPak-Npdi-Base` so tasksheet data URLs are IP literals too | nn-boss |
 | `/p01/policylist/`, `/p01/data/` | `nppl.app.openpak.org`, `npdi.cdn.openpak.org` | nn-boss |

@@ -26,7 +26,7 @@
 #include "module_wms.h"
 #include "plugin_wps.h"
 
-#define APP_VERSION "0.5.0"
+#define APP_VERSION "0.5.1"
 
 namespace {
 // openpak.org's dark theme, as in the Switch Patcher.

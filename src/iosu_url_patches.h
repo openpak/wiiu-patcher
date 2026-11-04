@@ -23,6 +23,10 @@ typedef struct URL_Patch {
 #define IOSU_URL(addr, previous, replacement) {addr, sizeof(previous), replacement}
 
 static constexpr URL_Patch url_patches[] = {
+        // Deliberately absent: tagaya (0xE2281964, 0xE22819B4) and nus.wup (0xE22830E0). Game and
+        // system update traffic stays on the stock Nintendo URLs, so the console fetches the
+        // version list from tagaya[-wup].nintendo.net and the title TMD/contents from Nintendo's
+        // CDN itself. ecs.wup stays here: our ECS answers with ccs.cdn.wup.shop.nintendo.net URLs.
         //nim-boss .rodata
         IOSU_URL(0xE2282550, "http://pushmore.wup.shop.openpak.org/pushmore/r/%s",
                  OPENPAK_IOSU_HTTP "/pushmore/r/%s"),
@@ -30,10 +34,6 @@ static constexpr URL_Patch url_patches[] = {
                  OPENPAK_IOSU_HTTP "/bst.dat"),
         IOSU_URL(0xE229A0D0, "http://npns-dev.c.app.openpak.org/bst2.dat",
                  OPENPAK_IOSU_HTTP "/bst2.dat"),
-        IOSU_URL(0xE2281964, "https://tagaya.wup.shop.openpak.org/tagaya/versionlist/%s/%s/%s",
-                 OPENPAK_IOSU_HTTPS "/tagaya/versionlist/%s/%s/%s"),
-        IOSU_URL(0xE22819B4, "https://tagaya.wup.shop.openpak.org/tagaya/versionlist/%s/%s/latest_version",
-                 OPENPAK_IOSU_HTTPS "/tagaya/versionlist/%s/%s/latest_version"),
         IOSU_URL(0xE2282584, "http://pushmo.wup.shop.openpak.org/pushmo/d/%s/%u",
                  OPENPAK_IOSU_HTTP "/pushmo/d/%s/%u"),
         IOSU_URL(0xE22825B8, "http://pushmo.wup.shop.openpak.org/pushmo/c/%u/%u",
@@ -42,8 +42,6 @@ static constexpr URL_Patch url_patches[] = {
                  OPENPAK_IOSU_HTTPS "/ecs/services/ECommerceSOAP"),
         IOSU_URL(0xE22830A0, "https://ecs.wup.shop.openpak.org/ecs/services/ECommerceSOAP",
                  OPENPAK_IOSU_HTTPS "/ecs/services/ECommerceSOAP"),
-        IOSU_URL(0xE22830E0, "https://nus.wup.shop.openpak.org/nus/services/NetUpdateSOAP",
-                 OPENPAK_IOSU_HTTPS "/nus/services/NetUpdateSOAP"),
         // Bare host of the policy list (the .bss URL below is built from it at IOSU start).
         IOSU_URL(0xE2299990, "nppl.app.openpak.org",
                  OPENPAK_SERVER_IP ":" OPENPAK_IOSU_PORT),
