@@ -17,8 +17,16 @@ const PinnedKey KEYS[] = {
 
 // Always stock, whatever the signed list says: game and system updates stay with Nintendo
 // (board #127), and the connection test measures the player's own internet.
-const char *const COMPILED_NEVER[] = {"tagaya.wup.shop.nintendo.net", "nus.wup.shop.nintendo.net",
-                                      "conntest.nintendowifi.net", "openpak.org"};
+const char *const COMPILED_NEVER[] = {
+    // Update path: the version list (tagaya, tagaya-wup.cdn), NetUpdate (nus), title metadata and
+    // contents (ccs, ccs.cdn, nus.cdn) and every other shop/CDN host Nintendo serves updates from.
+    // None of these is ever redirected on a Wii U, whatever family the signed list holds.
+    ".shop.nintendo.net", ".shop.nintendowifi.net", ".cdn.nintendo.net", ".cdn.nintendowifi.net",
+    "tagaya.wup.shop.nintendo.net", "nus.wup.shop.nintendo.net",
+    // The connection test measures the player's own internet.
+    "conntest.nintendowifi.net",
+    // Where the list itself is fetched, over public TLS.
+    "openpak.org"};
 
 bool b64decode(const std::string &s, std::vector<uint8_t> *out) {
     int val = 0, bits = -8;

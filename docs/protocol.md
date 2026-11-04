@@ -48,7 +48,7 @@ served at `https://openpak.org/api/v1/network/ceiling` (Ed25519, pinned key
 `36e8bcdd...7fe4`, contract in openpak-client `docs/signed-ceiling.md`). One list for every console:
 the payload's `all` array if present, otherwise the union of every platform's families; entries for
 other consoles' domains never match. `never` (payload, if present, plus the compiled
-`tagaya`/`nus.wup.shop.nintendo.net`, `conntest.nintendowifi.net`, bare `openpak.org`) always wins.
+`.shop.nintendo.net`, `.shop.nintendowifi.net`, `.cdn.nintendo.net`, `.cdn.nintendowifi.net`, `conntest.nintendowifi.net`, bare `openpak.org`) always wins.
 
 Boot: the plugin hands the module the cached envelope (`sd:/wiiu/openpak/redirects.json`, stored
 as received), then fetches a fresh one in the background (retries about two minutes while the

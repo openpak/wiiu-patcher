@@ -3,6 +3,10 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.6.1 — 2026-11-04
+
+- **Update and shop hosts are never redirected.** The network-wide list contains `.nintendo.net` and `.nintendowifi.net`, which also cover the update CDNs. The never-set now holds `.shop.nintendo.net`, `.shop.nintendowifi.net`, `.cdn.nintendo.net` and `.cdn.nintendowifi.net`, so `tagaya-wup.cdn`, `nus.cdn.wup.shop`, `ccs.cdn.wup.shop`, the `c.shop` hosts and the rest of the update path stay with Nintendo. `tests/run.sh` proves each against the live ceiling v18. The eShop SOAP hosts Inkay rewrites by URL (ecs, ias, cas) are OpenPak names and stay on OpenPak.
+
 ## v0.6.0 — 2026-11-04
 
 - **One signed redirect list for the whole network.** The module redirects a game-server name to OpenPak only when it is on the list: the bundled base (`*.openpak.org`, the two NAT check hosts) plus the network-wide signed list, the same Ed25519 envelope the Switch and the emulators verify (`/api/v1/network/ceiling`, pinned key, version never goes down). The list is the payload's `all` when present, otherwise every platform's families together; another console's names never match on a Wii U. Everything else resolves normally.

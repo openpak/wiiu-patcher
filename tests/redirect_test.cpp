@@ -35,8 +35,28 @@ int main(int argc, char **argv) {
     CHECK(!redirect_matches(l, "nus.wup.shop.nintendo.net"));
     CHECK(!redirect_matches(l, "conntest.nintendowifi.net"));
     CHECK(!redirect_matches(l, "openpak.org"));              // the list itself is fetched unredirected
-    CHECK(redirect_matches(l, "ecs.wup.shop.nintendo.net"));
     CHECK(!redirect_matches(l, "google.com"));
+
+    // Update hosts (#127 map plus the content CDNs): never redirected, in the bundled list and in
+    // the live ceiling alike, and the live union does contain their parent families.
+    CHECK(redirect_matches(l, "something.nintendo.net"));
+    CHECK(redirect_matches(l, "something.nintendowifi.net"));
+    const char *updates[] = {"tagaya.wup.shop.nintendo.net", "tagaya-wup.cdn.nintendo.net", "tagaya.cdn.nintendo.net",
+        "nus.wup.shop.nintendo.net", "nus.cdn.wup.shop.nintendo.net", "ccs.wup.shop.nintendo.net",
+        "ccs.cdn.wup.shop.nintendo.net", "ccs.cdn.c.shop.nintendo.net", "nus.c.shop.nintendo.net",
+        "ecs.wup.shop.nintendo.net", "ias.wup.shop.nintendo.net", "ccs.c.shop.nintendowifi.net",
+        "nus.c.shop.nintendowifi.net", "ecs.c.shop.nintendowifi.net", "ccs.cdn.c.shop.nintendowifi.net",
+        "conntest.nintendowifi.net"};
+    for (const char *h : updates) {
+        if (redirect_matches(l, h) || redirect_matches(base, h)) { printf("FAIL update host redirected: %s\n", h); fails++; }
+    }
+    // The eShop SOAP hosts Inkay rewrites by URL are OpenPak names (and IOSU takes IP literals, so
+    // it never asks the PPC resolver); they stay on OpenPak.
+    const char *openpak[] = {"ecs.wup.shop.openpak.org", "ias.wup.shop.openpak.org", "cas.c.shop.openpak.org",
+        "ecs.c.shop.openpak.org", "ias.c.shop.openpak.org", "nus.c.shop.openpak.org", "account.openpak.org"};
+    for (const char *h : openpak) {
+        if (!redirect_matches(l, h) || !redirect_matches(base, h)) { printf("FAIL OpenPak host not redirected: %s\n", h); fails++; }
+    }
 
     // Tampering: change one character of the signed payload and the signature must fail.
     std::string bad = env;
