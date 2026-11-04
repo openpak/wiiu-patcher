@@ -29,10 +29,10 @@
     Mandatory plugin information.
     If not set correctly, the loader will refuse to use the plugin.
 **/
-WUPS_PLUGIN_NAME("Inkay");
-WUPS_PLUGIN_DESCRIPTION("Pretendo Network Patcher");
+WUPS_PLUGIN_NAME("OpenPak Wii U Patcher");
+WUPS_PLUGIN_DESCRIPTION("Switches the Wii U between Nintendo and OpenPak");
 WUPS_PLUGIN_VERSION(INKAY_VERSION);
-WUPS_PLUGIN_AUTHOR("Pretendo contributors");
+WUPS_PLUGIN_AUTHOR("OpenPak contributors");
 WUPS_PLUGIN_LICENSE("GPLv3");
 
 WUPS_USE_STORAGE("inkay");

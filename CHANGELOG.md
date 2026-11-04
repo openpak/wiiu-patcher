@@ -3,6 +3,10 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.4.1 — 2026-11-04
+
+- Wording follows the Switch Patcher: the plugin is listed as "OpenPak Wii U Patcher" (was "Inkay"), the status toast says "Using Nintendo" and the restart item says "Reboot to apply"; the uwu locale no longer says Pretendo. The settings storage id stays `inkay`, so saved settings carry over.
+
 ## v0.4.0 — 2026-11-03
 
 - IOSU services reach OpenPak with no DNS record: the act, nim and boss URL patches are IP
