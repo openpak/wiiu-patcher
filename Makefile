@@ -119,15 +119,18 @@ $(BUILD):
 	@$(shell [ ! -d $(BUILD) ] && mkdir -p $(BUILD))
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	@$(MAKE) --no-print-directory -C $(CURDIR)/plugin -f $(CURDIR)/plugin/Makefile
+	@$(MAKE) --no-print-directory -C $(CURDIR)/app -f $(CURDIR)/app/Makefile
 	mkdir -p dist/
 	cp *.wms dist/
 	cp plugin/*.wps dist/
+	cp app/OpenPak-Wii-U-Patcher.wuhb dist/
 
 #-------------------------------------------------------------------------------
 clean:
 	@echo clean ...
 	@rm -fr dist $(BUILD) $(TARGET).wms $(TARGET).elf
 	@$(MAKE) --no-print-directory -C $(CURDIR)/plugin -f $(CURDIR)/plugin/Makefile clean
+	@$(MAKE) --no-print-directory -C $(CURDIR)/app -f $(CURDIR)/app/Makefile clean
 
 #-------------------------------------------------------------------------------
 else

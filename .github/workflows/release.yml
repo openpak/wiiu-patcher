@@ -1,7 +1,7 @@
 name: release
 
 # Tag v1.2.3 and this builds the plugin in the upstream toolchain image and attaches
-# Inkay-openpak.wms, Inkay-openpak.wps and the OpenPak CA to a GitHub Release. ci.yml builds the same on a manual run.
+# OpenPak-Wii-U-Patcher.wuhb, Inkay-openpak.wms, Inkay-openpak.wps and the OpenPak CA to a GitHub Release. ci.yml builds the same on a manual run.
 on:
   push:
     tags: ['v*.*.*']
@@ -17,8 +17,8 @@ jobs:
       - uses: actions/checkout@v5
       - run: docker build . -t builder
       - run: docker run --rm -v ${PWD}:/app -w /app builder
-      - run: ls -la dist/Inkay-openpak.wms dist/Inkay-openpak.wps
+      - run: ls -la dist/OpenPak-Wii-U-Patcher.wuhb dist/Inkay-openpak.wms dist/Inkay-openpak.wps
       - if: startsWith(github.ref, 'refs/tags/v')
-        run: gh release create "${GITHUB_REF_NAME}" dist/Inkay-openpak.wms dist/Inkay-openpak.wps data/ca.pem --repo "${GITHUB_REPOSITORY}" --title "${GITHUB_REF_NAME}" --generate-notes
+        run: gh release create "${GITHUB_REF_NAME}" dist/OpenPak-Wii-U-Patcher.wuhb dist/Inkay-openpak.wms dist/Inkay-openpak.wps data/ca.pem --repo "${GITHUB_REPOSITORY}" --title "${GITHUB_REF_NAME}" --generate-notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

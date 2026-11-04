@@ -3,6 +3,16 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.5.0 — 2026-11-04
+
+- **OpenPak Wii U Patcher**, a `.wuhb` app (`OpenPak-Wii-U-Patcher.wuhb`, in `app/`): one status screen with the
+  Switch Patcher's flow and wording (OPENPAK / NINTENDO pill, Nintendo and OpenPak rows with `Active`,
+  `A Select`, `B Exit`, `OpenPak selected. Reboot to apply?` with `A Reboot now` / `B Later`, `Failed: <reason>`).
+- It carries the module and plugin and installs them into Aroma with backup and exact rollback in
+  `sd:/wiiu/openpak/system`; a newer app updates them and offers the reboot. Files from the manual route are
+  recognised.
+- Releases attach the `.wuhb` next to the module and plugin. `tests/run.sh` checks the backup rules on the host.
+
 ## v0.4.1 — 2026-11-04
 
 - Wording follows the Switch Patcher: the plugin is listed as "OpenPak Wii U Patcher" (was "Inkay"), the status toast says "Using Nintendo" and the restart item says "Reboot to apply"; the uwu locale no longer says Pretendo. The settings storage id stays `inkay`, so saved settings carry over.

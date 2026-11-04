@@ -12,3 +12,8 @@ certs/
 inkay_config.local.h
 next-session.md
 NEXT-SESSION.md
+/app/build
+/app/data/module.wms
+/app/data/plugin.wps
+*.rpx
+*.wuhb
