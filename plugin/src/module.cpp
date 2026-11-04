@@ -91,3 +91,24 @@ void Inkay_SetPluginRunning() {
 
     moduleSetPluginRunning();
 }
+
+int32_t Inkay_SetRedirectList(const char *envelope, uint32_t len) {
+    typedef int32_t (*fn_t)(const char *, uint32_t);
+    static fn_t fn = nullptr;
+    if (!module) return -100;
+    if (!fn && OSDynLoad_FindExport(module, OS_DYNLOAD_EXPORT_FUNC, "Inkay_SetRedirectList", reinterpret_cast<void **>(&fn)) != OS_DYNLOAD_OK) {
+        DEBUG_FUNCTION_LINE("Failed to find function %s", "Inkay_SetRedirectList");
+        return -101;   // an older module without the signed list: the bundled list stays
+    }
+    return fn(envelope, len);
+}
+
+void Inkay_GetRedirectInfo(uint32_t *names, int32_t *version) {
+    typedef void (*fn_t)(uint32_t *, int32_t *);
+    static fn_t fn = nullptr;
+    if (names) *names = 0;
+    if (version) *version = 0;
+    if (!module) return;
+    if (!fn && OSDynLoad_FindExport(module, OS_DYNLOAD_EXPORT_FUNC, "Inkay_GetRedirectInfo", reinterpret_cast<void **>(&fn)) != OS_DYNLOAD_OK) return;
+    fn(names, version);
+}

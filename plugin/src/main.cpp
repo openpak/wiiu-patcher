@@ -22,6 +22,7 @@
 #include <utils/logger.h>
 #include "config.h"
 #include "module.h"
+#include "redirect_fetch.h"
 
 #define INKAY_VERSION "v3.1.0"
 
@@ -36,6 +37,7 @@ WUPS_PLUGIN_AUTHOR("OpenPak contributors");
 WUPS_PLUGIN_LICENSE("GPLv3");
 
 WUPS_USE_STORAGE("inkay");
+WUPS_USE_WUT_DEVOPTAB();
 
 INITIALIZE_PLUGIN() {
     WHBLogCafeInit();
@@ -48,9 +50,13 @@ INITIALIZE_PLUGIN() {
 
     // if using pretendo then (try to) apply the ssl patches
     Inkay_Initialize(Config::connect_to_network, Config::show_startup_toast);
+
+    // The signed redirect list: the SD cache now, a fresh fetch once the network is up.
+    if (Config::connect_to_network) RedirectList_Start();
 }
 
 DEINITIALIZE_PLUGIN() {
+    RedirectList_Stop();
     Inkay_Finalize();
     NotificationModule_DeInitLibrary();
 

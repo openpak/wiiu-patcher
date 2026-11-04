@@ -18,3 +18,10 @@
 
 void patchDNS();
 void unpatchDNS();
+
+#include <cstdint>
+
+// The signed redirect list. Set returns the accepted version, or a negative value when the
+// envelope is refused (bad signature, malformed) or older than the one in use.
+int32_t patchedRedirectSet(const char *envelope, uint32_t len);
+void patchedRedirectInfo(uint32_t *names, int32_t *version);

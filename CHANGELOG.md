@@ -3,6 +3,13 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.6.0 — 2026-11-04
+
+- **One signed redirect list for the whole network.** The module redirects a game-server name to OpenPak only when it is on the list: the bundled base (`*.openpak.org`, the two NAT check hosts) plus the network-wide signed list, the same Ed25519 envelope the Switch and the emulators verify (`/api/v1/network/ceiling`, pinned key, version never goes down). The list is the payload's `all` when present, otherwise every platform's families together; another console's names never match on a Wii U. Everything else resolves normally.
+- The plugin loads the cached list from `sd:/wiiu/openpak/redirects.json` at boot and fetches a fresh one in the background once the network is up (CURLWrapperModule, public TLS). A bad signature, a missing cache or no network leaves the cached or bundled list.
+- Never redirected, whatever the list says: tagaya and nus (game and system updates stay with Nintendo), `conntest.nintendowifi.net`, and the bare `openpak.org` where the list is fetched.
+- The patcher app shows `Redirects: N names (signed list vX)`, or `(bundled list)`. Host test: `tests/run.sh`.
+
 ## v0.5.1 — 2026-11-04
 
 - **Game and system updates come from Nintendo.** The tagaya version list and NetUpdate (nus.wup) URLs in IOS-NIM are no longer rewritten, so dumped games and system titles update straight from Nintendo's live servers. Account, friends, NEX, SpotPass, Miiverse and the ECS/IAS eShop paths stay on OpenPak.

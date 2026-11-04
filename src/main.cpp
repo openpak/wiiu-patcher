@@ -107,6 +107,15 @@ static const char *get_pretendo_message(inkay_language language) {
     return get_config_strings(language).using_pretendo_network.data();
 }
 
+// Called by the plugin with the bytes of a signed list (the SD cache, then the boot fetch).
+static int32_t Inkay_SetRedirectList(const char *envelope, uint32_t len) {
+    return patchedRedirectSet(envelope, len);
+}
+
+static void Inkay_GetRedirectInfo(uint32_t *names, int32_t *version) {
+    patchedRedirectInfo(names, version);
+}
+
 static void Inkay_SetPluginRunning() {
     Config::plugin_is_loaded = true;
 }
@@ -242,3 +251,5 @@ WUMS_APPLICATION_ENDS() {
 WUMS_EXPORT_FUNCTION(Inkay_Initialize);
 WUMS_EXPORT_FUNCTION(Inkay_GetStatus);
 WUMS_EXPORT_FUNCTION(Inkay_SetPluginRunning);
+WUMS_EXPORT_FUNCTION(Inkay_SetRedirectList);
+WUMS_EXPORT_FUNCTION(Inkay_GetRedirectInfo);

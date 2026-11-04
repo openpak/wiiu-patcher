@@ -21,12 +21,13 @@
 #include <string>
 
 #include "Backup.hpp"
+#include "redirect_list.h"
 #include "font_bold_ttf.h"
 #include "font_regular_ttf.h"
 #include "module_wms.h"
 #include "plugin_wps.h"
 
-#define APP_VERSION "0.5.1"
+#define APP_VERSION "0.6.0"
 
 namespace {
 // openpak.org's dark theme, as in the Switch Patcher.
@@ -186,6 +187,18 @@ std::string foreignInkay() {
     return "";
 }
 
+// "Redirects: N names (signed list vX)": the list the plugin cached on the SD card, verified here
+// with the same pinned key; with no valid cache, the bundled list.
+void redirectStatus(char *out, size_t n) {
+    RedirectList l = redirect_bundled();
+    bool ok;
+    std::string env = slurp(sdRoot + "/wiiu/openpak/redirects.json", &ok), err;
+    if (ok && redirect_parse_envelope(env.data(), env.size(), &l, &err))
+        snprintf(out, n, "Redirects: %zu names (signed list v%lld)", l.count(), (long long) l.version);
+    else
+        snprintf(out, n, "Redirects: %zu names (bundled list)", l.count());
+}
+
 bool isOn() { return Backup::installed() && readFlag(); }
 
 void reboot() {
@@ -202,6 +215,7 @@ struct Ui {
     int sel = IT_NINTENDO;
     char status[200] = "";
     char note[200] = "";
+    char redirects[120] = "";
     std::string foreign;
 } ui;
 
@@ -240,8 +254,9 @@ void render() {
     } else {
         text(MARGIN, msg_y + 12, PX_LABEL, LEFT, MUTED, "Changes apply at boot: Aroma loads the module and plugin then.");
         text(MARGIN, msg_y + 38, PX_LABEL, LEFT, MUTED, "%d of 2 OpenPak files installed", Backup::liveCount());
+        text(MARGIN, msg_y + 64, PX_LABEL, LEFT, MUTED, "%s", ui.redirects);
     }
-    int ny = msg_y + (ui.status[0] ? 76 : 64);
+    int ny = msg_y + (ui.status[0] ? 76 : 90);
     if (ui.note[0]) { text(MARGIN, ny, PX_LABEL, LEFT, WARN, "%s", ui.note); ny += 26; }
     if (!ui.foreign.empty())
         text(MARGIN, ny, PX_LABEL, LEFT, WARN, "Another Inkay is installed (%s): remove it first.", ui.foreign.c_str());
@@ -299,6 +314,7 @@ int main(int, char **) {
         if (Backup::install(err, sizeof(err))) { ui.confirm = true; snprintf(ui.status, sizeof(ui.status), "OpenPak setup updated. Reboot to apply?"); }
         else snprintf(ui.status, sizeof(ui.status), "Failed: %s", err);
     }
+    redirectStatus(ui.redirects, sizeof(ui.redirects));
     ui.on = isOn();
     ui.sel = ui.on ? IT_OPENPAK : IT_NINTENDO;
     ui.foreign = foreignInkay();

@@ -46,7 +46,7 @@ LDFLAGS	=	-g $(ARCH) $(OPT) $(RPXSPECS) -Wl,-Map,$(notdir $*.map) -Wl,-gc-sectio
 
 LDFLAGS	+=	$(WUPSSPECS)
 
-LIBS	:= -lwups -lwut -lnotifications
+LIBS	:= -lwups -lcurlwrapper -lwut -lnotifications
 
 #-------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level

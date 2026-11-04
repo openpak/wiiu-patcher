@@ -40,6 +40,21 @@ injection at per-firmware addresses with no dump to measure them against. The IP
 the TLS name check (NoSSL is on today; the IP SAN keeps a CA-only future working) and Host
 routing (done by path on the box).
 
+## The signed redirect list
+
+The PPC hook (`src/patches/dns_hooks.cpp`) answers only names on the redirect list. The list is the
+bundled base plus the network-wide signed list (`common/redirect_list.cpp`): the ceiling envelope
+served at `https://openpak.org/api/v1/network/ceiling` (Ed25519, pinned key
+`36e8bcdd...7fe4`, contract in openpak-client `docs/signed-ceiling.md`). One list for every console:
+the payload's `all` array if present, otherwise the union of every platform's families; entries for
+other consoles' domains never match. `never` (payload, if present, plus the compiled
+`tagaya`/`nus.wup.shop.nintendo.net`, `conntest.nintendowifi.net`, bare `openpak.org`) always wins.
+
+Boot: the plugin hands the module the cached envelope (`sd:/wiiu/openpak/redirects.json`, stored
+as received), then fetches a fresh one in the background (retries about two minutes while the
+network comes up). The module verifies before applying and refuses a lower version than the one in
+use. No valid cache and no network: the bundled list.
+
 ### Trade-off: a server move is a release
 
 The addresses are compiled in (`common/inkay_config.h`, Makefile variables

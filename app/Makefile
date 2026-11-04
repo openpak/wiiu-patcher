@@ -15,7 +15,7 @@ TARGET		:=	OpenPak-Wii-U-Patcher
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
-INCLUDES	:=	source
+INCLUDES	:=	source ../common
 
 APP_NAME	:=	OpenPak Wii U Patcher
 APP_SHORTNAME	:=	OpenPak
@@ -33,11 +33,11 @@ LIBDIRS	:=	$(PORTLIBS) $(WUT_ROOT)
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
-export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
+export VPATH	:=	$(CURDIR)/../common $(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) $(foreach dir,$(DATA),$(CURDIR)/$(dir))
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 # the module and plugin the app carries, copied before the data files are listed
 _ := $(shell cp -f ../Inkay-openpak.wms data/module.wms && cp -f ../plugin/Inkay-openpak.wps data/plugin.wps)
-CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp))) redirect_list.cpp ed25519.cpp
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 export LD	:=	$(CXX)
 export OFILES_BIN	:=	$(addsuffix .o,$(BINFILES))

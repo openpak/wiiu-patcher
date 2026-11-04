@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 enum class InkayStatus {
     Uninitialized, ///< The module isn't initialized
     Nintendo,      ///< The module is initialized but hasn't applied any patches
@@ -28,3 +30,8 @@ void Inkay_Initialize(bool apply_patches, bool show_startup_toast);
 void Inkay_Finalize();
 InkayStatus Inkay_GetStatus();
 void Inkay_SetPluginRunning();
+
+// The network-wide signed redirect list lives in the module (it verifies and applies it).
+// Returns the accepted list version, or a negative value when the module refused it.
+int32_t Inkay_SetRedirectList(const char *envelope, uint32_t len);
+void Inkay_GetRedirectInfo(uint32_t *names, int32_t *version);
