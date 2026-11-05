@@ -21,7 +21,7 @@ const char *const COMPILED_NEVER[] = {
     // Update path: the version list (tagaya, tagaya-wup.cdn), NetUpdate (nus), title metadata and
     // contents (ccs, ccs.cdn, nus.cdn) and every other shop/CDN host Nintendo serves updates from.
     // None of these is ever redirected on a Wii U, whatever family the signed list holds.
-    // Title icons (idbe-wup.cdn.nintendo.net, idbe-ctr.cdn.nintendo.net) are covered by .cdn.nintendo.net.
+    // Wii U title icons (idbe-wup.cdn.nintendo.net) are covered by .cdn.nintendo.net.
     ".shop.nintendo.net", ".shop.nintendowifi.net", ".cdn.nintendo.net", ".cdn.nintendowifi.net",
     "tagaya.wup.shop.nintendo.net", "nus.wup.shop.nintendo.net",
     // The connection test measures the player's own internet.

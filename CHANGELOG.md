@@ -3,9 +3,13 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.6.4 — 2026-11-05
+
+- v0.6.3 also dropped the two idbe-ctr (3DS) icon patches; they are back. Only the Wii U update path is stock. Audit table: `docs/update-path.md`.
+
 ## v0.6.3 — 2026-11-05
 
-- **Title icons come from Nintendo.** The four idbe URL patches (idbe-wup and idbe-ctr) are gone, so the console fetches icondata from Nintendo's CDN. OpenPak answered 404 for them, which the update dialog reports as error 105-1185 (card #127).
+- **Title icons come from Nintendo.** The two idbe-wup URL patches are gone, so the console fetches icondata from Nintendo's CDN. OpenPak answered 404 for them, which the update dialog reports as error 105-1185 (card #127).
 
 ## v0.6.2 — 2026-11-05
 
