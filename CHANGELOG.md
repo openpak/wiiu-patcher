@@ -3,6 +3,10 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.6.3 — 2026-11-05
+
+- **Title icons come from Nintendo.** The four idbe URL patches (idbe-wup and idbe-ctr) are gone, so the console fetches icondata from Nintendo's CDN. OpenPak answered 404 for them, which the update dialog reports as error 105-1185 (card #127).
+
 ## v0.6.2 — 2026-11-05
 
 - **The Wii U Patcher app writes `sd:/wiiu/openpak/patcher.log`.** One line per start-up step (SD mount, SDL, window, renderer, fonts, staging, first frames, input, exit), the previous run kept as `patcher.log.old`, and a crash writes its program counter, link register and faulting address before the console returns to the menu. Failed SDL, window or renderer start-up is logged and leaves the app instead of drawing on a null renderer. Button presses in the first half second are ignored, so the A press that launched the app cannot select or exit by itself.

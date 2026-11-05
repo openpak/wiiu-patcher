@@ -26,7 +26,9 @@ static constexpr URL_Patch url_patches[] = {
         // Deliberately absent: tagaya (0xE2281964, 0xE22819B4) and nus.wup (0xE22830E0). Game and
         // system update traffic stays on the stock Nintendo URLs, so the console fetches the
         // version list from tagaya[-wup].nintendo.net and the title TMD/contents from Nintendo's
-        // CDN itself. ecs.wup stays here: our ECS answers with ccs.cdn.wup.shop.nintendo.net URLs.
+        // CDN itself. Also absent: idbe (0xE22AB2D8, 0xE22AB318, 0xE22AB358, 0xE22AB398), so title
+        // icons come from idbe-wup/idbe-ctr.cdn.nintendo.net; a 404 there is error 105-1185 (card #127).
+        // ecs.wup stays here: our ECS answers with ccs.cdn.wup.shop.nintendo.net URLs.
         //nim-boss .rodata
         IOSU_URL(0xE2282550, "http://pushmore.wup.shop.openpak.org/pushmore/r/%s",
                  OPENPAK_IOSU_HTTP "/pushmore/r/%s"),
@@ -55,14 +57,6 @@ static constexpr URL_Patch url_patches[] = {
                  OPENPAK_IOSU_HTTPS "/p01/tasksheet/%s/%s/%s/%s?c=%s&l=%s"),
         IOSU_URL(0xE229B238, "https://npts.app.openpak.org/p01/tasksheet/%s/%s/%s?c=%s&l=%s",
                  OPENPAK_IOSU_HTTPS "/p01/tasksheet/%s/%s/%s?c=%s&l=%s"),
-        IOSU_URL(0xE22AB2D8, "https://idbe-wup.cdn.openpak.org/icondata/%02X/%016llX.idbe",
-                 OPENPAK_IOSU_HTTPS "/icondata/%02X/%016llX.idbe"),
-        IOSU_URL(0xE22AB318, "https://idbe-ctr.cdn.openpak.org/icondata/%02X/%016llX.idbe",
-                 OPENPAK_IOSU_HTTPS "/icondata/%02X/%016llX.idbe"),
-        IOSU_URL(0xE22AB358, "https://idbe-wup.cdn.openpak.org/icondata/%02X/%016llX-%d.idbe",
-                 OPENPAK_IOSU_HTTPS "/icondata/%02X/%016llX-%d.idbe"),
-        IOSU_URL(0xE22AB398, "https://idbe-ctr.cdn.openpak.org/icondata/%02X/%016llX-%d.idbe",
-                 OPENPAK_IOSU_HTTPS "/icondata/%02X/%016llX-%d.idbe"),
         IOSU_URL(0xE22B3EF8, "https://ecs.c.shop.openpak.org",
                  OPENPAK_IOSU_HTTPS),
         IOSU_URL(0xE22B3F30, "https://ecs.c.shop.openpak.org/ecs/services/ECommerceSOAP",
