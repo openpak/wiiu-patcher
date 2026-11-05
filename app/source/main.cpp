@@ -8,12 +8,15 @@
 #include <SDL2_gfxPrimitives.h>
 #include <SDL_ttf.h>
 
+#include <coreinit/exception.h>
 #include <coreinit/launch.h>
+#include <coreinit/time.h>
 #include <sysapp/launch.h>
 #include <vpad/input.h>
 #include <whb/sdcard.h>
 
 #include <dirent.h>
+#include <unistd.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -27,7 +30,7 @@
 #include "module_wms.h"
 #include "plugin_wps.h"
 
-#define APP_VERSION "0.6.1"
+#define APP_VERSION "0.6.2"
 
 namespace {
 // openpak.org's dark theme, as in the Switch Patcher.
@@ -49,6 +52,42 @@ std::string sdRoot;
 const std::string AROMA = "wiiu/environments/aroma";
 
 Backup::Item items[2];
+
+// ---- log ------------------------------------------------------------------------------------
+// sd:/wiiu/openpak/patcher.log, one line per step, closed after every line so it survives a crash.
+// The previous run is kept as patcher.log.old. Nothing else in the app depends on it.
+std::string logPath;
+
+void logf(const char *fmt, ...) {
+    if (logPath.empty()) return;
+    FILE *f = fopen(logPath.c_str(), "ab");
+    if (!f) return;
+    fprintf(f, "[%u] ", (unsigned) (OSTicksToMilliseconds(OSGetTime()) % 1000000));
+    va_list ap; va_start(ap, fmt); vfprintf(f, fmt, ap); va_end(ap);
+    fputc('\n', f);
+    fflush(f);
+    fclose(f);
+}
+
+void logOpen(const std::string &root) {
+    std::string dir = root + "/wiiu/openpak";
+    mkdir((root + "/wiiu").c_str(), 0777);
+    mkdir(dir.c_str(), 0777);
+    std::string p = dir + "/patcher.log";
+    std::remove((p + ".old").c_str());
+    std::rename(p.c_str(), (p + ".old").c_str());
+    logPath = p;
+}
+
+// A crash writes where it happened (pc, link register, faulting address) and then proceeds as before.
+BOOL onException(OSContext *c, const char *kind) {
+    logf("EXCEPTION %s pc=%08x lr=%08x dar=%08x r1=%08x r3=%08x", kind, c->srr0, c->lr, c->dar, c->gpr[1], c->gpr[3]);
+    return FALSE;
+}
+BOOL onDsi(OSContext *c) { return onException(c, "DSI"); }
+BOOL onIsi(OSContext *c) { return onException(c, "ISI"); }
+BOOL onProgram(OSContext *c) { return onException(c, "PROGRAM"); }
+BOOL onAlign(OSContext *c) { return onException(c, "ALIGNMENT"); }
 
 // ---- drawing --------------------------------------------------------------------------------
 void fill(Rgb c) { SDL_SetRenderDrawColor(rnd, c.r, c.g, c.b, 255); }
@@ -202,6 +241,7 @@ void redirectStatus(char *out, size_t n) {
 bool isOn() { return Backup::installed() && readFlag(); }
 
 void reboot() {
+    logf("reboot requested");
     WHBUnmountSdCard();
     OSLaunchTitlel(OS_TITLE_ID_REBOOT, 0);
     // Still here: the reboot was not accepted. Relaunch the menu; Aroma loads modules at power on.
@@ -279,6 +319,7 @@ void select(bool wantOpenPak) {
     }
     bool ok = wantOpenPak ? (Backup::install(err, sizeof(err)) && enableFlag(err, sizeof(err)))
                           : (Backup::remove(err, sizeof(err)) && restoreFlag(err, sizeof(err)));
+    logf("select %s: %s%s", wantOpenPak ? "OpenPak" : "Nintendo", ok ? "ok" : "failed: ", ok ? "" : err);
     if (!ok) { snprintf(ui.status, sizeof(ui.status), "Failed: %s", err); return; }
     ui.on = wantOpenPak;
     ui.confirm = true;
@@ -292,18 +333,37 @@ int main(int, char **) {
     WHBMountSdCard();
     const char *mp = WHBGetSdCardMountPath();
     sdRoot = mp ? mp : "fs:/vol/external01";
+    logOpen(sdRoot);
+    OSSetExceptionCallbackEx(OS_EXCEPTION_MODE_THREAD_ALL_CORES, OS_EXCEPTION_TYPE_DSI, onDsi);
+    OSSetExceptionCallbackEx(OS_EXCEPTION_MODE_THREAD_ALL_CORES, OS_EXCEPTION_TYPE_ISI, onIsi);
+    OSSetExceptionCallbackEx(OS_EXCEPTION_MODE_THREAD_ALL_CORES, OS_EXCEPTION_TYPE_PROGRAM, onProgram);
+    OSSetExceptionCallbackEx(OS_EXCEPTION_MODE_THREAD_ALL_CORES, OS_EXCEPTION_TYPE_ALIGNMENT, onAlign);
+    logf("OpenPak Wii U Patcher v" APP_VERSION " start, sd=%s", sdRoot.c_str());
     items[0] = {"module", "wiiu/environments/aroma/modules/Inkay-openpak.wms", module_wms, module_wms_size, true};
     items[1] = {"plugin", "wiiu/environments/aroma/plugins/Inkay-openpak.wps", plugin_wps, plugin_wps_size, true};
     Backup::init(sdRoot, items, 2);
 
-    SDL_Init(SDL_INIT_VIDEO);
-    TTF_Init();
+    logf("staging set up, SDL_Init");
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) logf("SDL_Init failed: %s", SDL_GetError());
+    logf("TTF_Init");
+    if (TTF_Init() != 0) logf("TTF_Init failed: %s", TTF_GetError());
     SDL_Window *win = SDL_CreateWindow("OpenPak Wii U Patcher", 0, 0, W, H, 0);
+    if (!win) logf("SDL_CreateWindow failed: %s", SDL_GetError());
     rnd = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+    if (!rnd) { logf("SDL_CreateRenderer failed: %s", SDL_GetError()); }
+    else { SDL_RendererInfo ri; if (SDL_GetRendererInfo(rnd, &ri) == 0) logf("renderer %s", ri.name); }
     fontTitle = TTF_OpenFontRW(SDL_RWFromConstMem(font_bold_ttf, font_bold_ttf_size), 1, PX_TITLE);
     fontBody = TTF_OpenFontRW(SDL_RWFromConstMem(font_regular_ttf, font_regular_ttf_size), 1, PX_BODY);
     fontLabel = TTF_OpenFontRW(SDL_RWFromConstMem(font_regular_ttf, font_regular_ttf_size), 1, PX_LABEL);
+    if (!fontTitle || !fontBody || !fontLabel) logf("font load failed: %s", TTF_GetError());
+    logf("VPADInit");
     VPADInit();
+    if (!rnd) {
+        // Nothing to draw on: say so in the log and leave through the menu instead of spinning.
+        logf("no renderer, leaving");
+        TTF_Quit(); SDL_Quit(); WHBUnmountSdCard();
+        return 1;
+    }
 
     // The files inside the app become the managed copies. A newer set replaces the one an earlier
     // release installed, and the reboot is offered.
@@ -314,20 +374,28 @@ int main(int, char **) {
         if (Backup::install(err, sizeof(err))) { ui.confirm = true; snprintf(ui.status, sizeof(ui.status), "OpenPak setup updated. Reboot to apply?"); }
         else snprintf(ui.status, sizeof(ui.status), "Failed: %s", err);
     }
+    logf("staged (changed=%d), redirectStatus", changed);
     redirectStatus(ui.redirects, sizeof(ui.redirects));
+    logf("%s", ui.redirects);
     ui.on = isOn();
     ui.sel = ui.on ? IT_OPENPAK : IT_NINTENDO;
     ui.foreign = foreignInkay();
     if (!exists(sdRoot + "/" + AROMA)) snprintf(ui.note, sizeof(ui.note), "Aroma was not found on the SD card.");
 
+    logf("main loop: on=%d foreign=%s", ui.on, ui.foreign.c_str());
     bool running = true;
+    int frame = 0;
     while (running) {
         SDL_Event e;
-        while (SDL_PollEvent(&e)) if (e.type == SDL_QUIT) running = false;
+        while (SDL_PollEvent(&e)) if (e.type == SDL_QUIT) { logf("SDL_QUIT at frame %d", frame); running = false; }
 
         VPADStatus st; VPADReadError verr;
         VPADRead(VPAD_CHAN_0, &st, 1, &verr);
         uint32_t down = verr == VPAD_READ_SUCCESS ? st.trigger : 0;
+        // The A press that launched the app can still be reported on the first reads; ignore input
+        // for the first half second so it cannot select or exit before the screen is seen.
+        if (frame < 30) down = 0;
+        if (down) logf("frame %d buttons %08x", frame, down);
         if (ui.confirm) {
             if (down & VPAD_BUTTON_A) reboot();
             else if (down & VPAD_BUTTON_B) { ui.confirm = false; ui.status[0] = '\0'; }
@@ -336,8 +404,11 @@ int main(int, char **) {
         else if (down & (VPAD_BUTTON_B | VPAD_BUTTON_PLUS)) running = false;
         else if (down & VPAD_BUTTON_A) select(ui.sel == IT_OPENPAK);
         render();
+        if (frame < 3) logf("frame %d drawn", frame);
+        frame++;
     }
 
+    logf("leaving after %d frames", frame);
     TTF_Quit();
     SDL_Quit();
     WHBUnmountSdCard();

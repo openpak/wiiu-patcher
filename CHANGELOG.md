@@ -3,6 +3,10 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.6.2 — 2026-11-05
+
+- **The Wii U Patcher app writes `sd:/wiiu/openpak/patcher.log`.** One line per start-up step (SD mount, SDL, window, renderer, fonts, staging, first frames, input, exit), the previous run kept as `patcher.log.old`, and a crash writes its program counter, link register and faulting address before the console returns to the menu. Failed SDL, window or renderer start-up is logged and leaves the app instead of drawing on a null renderer. Button presses in the first half second are ignored, so the A press that launched the app cannot select or exit by itself.
+
 ## v0.6.1 — 2026-11-04
 
 - **Update and shop hosts are never redirected.** The network-wide list contains `.nintendo.net` and `.nintendowifi.net`, which also cover the update CDNs. The never-set now holds `.shop.nintendo.net`, `.shop.nintendowifi.net`, `.cdn.nintendo.net` and `.cdn.nintendowifi.net`, so `tagaya-wup.cdn`, `nus.cdn.wup.shop`, `ccs.cdn.wup.shop`, the `c.shop` hosts and the rest of the update path stay with Nintendo. `tests/run.sh` proves each against the live ceiling v18. The eShop SOAP hosts Inkay rewrites by URL (ecs, ias, cas) are OpenPak names and stay on OpenPak.
